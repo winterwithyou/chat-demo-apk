@@ -96,6 +96,12 @@ jobs:
         working-directory: app
         run: pnpm install --no-frozen-lockfile
 
+      - name: Add Capacitor packages
+        working-directory: app
+        run: |
+          pnpm add -D @capacitor/cli@8 @capacitor/core@8 @capacitor/android@8 \
+            @capacitor/filesystem@8 @capacitor/share@8
+
       - name: Type check
         working-directory: app
         run: pnpm type
@@ -107,7 +113,6 @@ jobs:
       - name: Add Capacitor Android shell
         working-directory: app
         run: |
-          pnpm add -D @capacitor/cli@8 @capacitor/core@8 @capacitor/android@8
           pnpm exec cap add android
           pnpm exec cap sync android
 
