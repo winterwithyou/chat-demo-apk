@@ -34,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           STORE_PASS=$(openssl rand -hex 16)
-          KEY_PASS=$(openssl rand -hex 16)
+          KEY_PASS="$STORE_PASS"
           ALIAS=deepseek-release
           keytool -genkeypair -keystore release.keystore -alias "$ALIAS" \
             -keyalg RSA -keysize 4096 -validity 10000 \
@@ -133,7 +133,6 @@ jobs:
             export KS_FILE="$PWD/app/release.keystore"
             export KS_STORE_PASSWORD="$(jq -r .storePassword ../signing.json)"
             export KS_KEY_ALIAS="$(jq -r .keyAlias ../signing.json)"
-            export KS_KEY_PASSWORD="$(jq -r .keyPassword ../signing.json)"
             cat > app/signing.gradle <<'GRADLE'
           android {
               signingConfigs {
@@ -141,7 +140,7 @@ jobs:
                       storeFile file(System.getenv("KS_FILE"))
                       storePassword System.getenv("KS_STORE_PASSWORD")
                       keyAlias System.getenv("KS_KEY_ALIAS")
-                      keyPassword System.getenv("KS_KEY_PASSWORD")
+                      keyPassword System.getenv("KS_STORE_PASSWORD")
                   }
               }
               buildTypes {
